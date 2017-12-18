@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="ECharts">
+	<title>Echarts3.0以上 让柱状图和x轴标签添加点击事件</title>
+</head>
+<body>
+    <div id="mainBar" style="border:1px solid #ccc;padding:10px;"></div>
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script type="text/javascript" src="js/echarts.js"></script>
+	<script type="text/javascript">
+		/**
+		 * 支持Echarts3.0以上 让柱状图和x轴标签添加点击事件，并且获取当前点击的是第几个柱状图，然后获取对应点击的id，从而显示想要的信息
+		 * @author andot
+		 * @date 2017-12-18 09:41:41
+		 *
+		 */
+	    var width;
+	    var height;
+	    var myChart;
+	    var ids = [55,66,85,86,55,544,5,6,8,4,88,89]
+	    $(function(){
+	        //自适应设置
+	        width = $(window).width();
+	        height = $(window).height();
+	        $("#mainBar").css("width",width-40);
+	        $("#mainBar").css("height",height-40);
+	        console.log(height);
+	        setEcharts();
+	    });
+
+	    $(window).resize(function() {
+	        width = $(window).width();
+	        height = $(window).height();
+	        $("#mainBar").css("width",width-40);
+	        $("#mainBar").css("height",height-40);
+	    }); 
+
+	    function setEcharts(){
+	        myChart = echarts.init(document.getElementById('mainBar'));
+	        //自适应
+	        window.onresize = myChart.resize;
+
+	        myChart.setOption({
+	            title : {
+	                text: '未来一周气温变化',
+	                subtext: '纯属虚构'
+	            },
+	            legend: {
+	                data:['蒸发量','降水量']
+	            },
+	            calculable : true,
+	            xAxis : [
+	                {
+	                    type : 'category',
+	                    data : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+	                    triggerEvent:true
+	                }
+	            ],
+	            yAxis : [
+	                {
+	                    type : 'value',
+	                }
+	            ],
+	            series : [
+	                {
+	                    name:'蒸发量',
+	                    type:'bar',
+	                    data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+	                },
+	                {
+	                    name:'降水量',
+	                    type:'bar',
+	                    data:[2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+	                }
+	            ]
+	        });
+
+	        myChart.on('click', function (params) {
+				if(params.componentType =="xAxis"){ 
+					alert("单击了"+params.value+"x轴标签, 你点击的是第"+(Number(params.event.target.anid.split("_")[1])+1)+"个X标签；当前对应的id为："+ids[params.event.target.anid.split("_")[1]]);
+				}else{ 
+					alert("单击了"+params.name+"柱状图, 你点击的是第"+(params.dataIndex+1)+"个柱状图；当前对应的id为："+ids[params.dataIndex]);   //数组下标是从0开始的哦，图也是从0开始的
+				} 
+	        });  
+	    }
+
+	</script>
+</body>
+</html>
